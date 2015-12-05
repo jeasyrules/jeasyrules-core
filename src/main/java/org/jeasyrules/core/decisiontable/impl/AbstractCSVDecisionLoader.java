@@ -41,12 +41,13 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 	protected String validationOperator;
 
 	/**
-	 * {@inheritDoc}
+	 * Loading CSV into decision table with a specified separator.
 	 * 
+	 * @param in
+	 * @param separator
 	 * @throws IOException
 	 */
-	@Override
-	public void load(InputStream in) throws IOException {
+	public void load(InputStream in, Character separator) throws IOException {
 		Reader reader = new InputStreamReader(new BOMInputStream(in));
 		parser = CSVFormat.newFormat(';').withHeader().parse(reader);
 
@@ -59,6 +60,16 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 		((HashMapDecisionTableImpl<T>) decisionTable).setHeaders(this.headers);
 		((HashMapDecisionTableImpl<T>) decisionTable).setRows(rows);
 		((HashMapDecisionTableImpl<T>) decisionTable).setValidationOperator(validationOperator);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws IOException
+	 */
+	@Override
+	public void load(InputStream in) throws IOException {
+		this.load(in, ';');
 	}
 
 	/**
