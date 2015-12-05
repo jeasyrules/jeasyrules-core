@@ -49,7 +49,7 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 	 */
 	public void load(InputStream in, Character separator) throws IOException {
 		Reader reader = new InputStreamReader(new BOMInputStream(in));
-		parser = CSVFormat.newFormat(';').withHeader().parse(reader);
+		parser = CSVFormat.newFormat(separator).withHeader().parse(reader);
 
 		Map<String, Boolean> hashExists = new HashMap<String, Boolean>();
 		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
