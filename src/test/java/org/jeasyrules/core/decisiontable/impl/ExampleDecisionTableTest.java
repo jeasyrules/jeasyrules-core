@@ -1,5 +1,7 @@
 package org.jeasyrules.core.decisiontable.impl;
 
+import static org.jeasyrules.core.decisiontable.DecisionConstants.V_FALSE;
+import static org.jeasyrules.core.decisiontable.DecisionConstants.V_TRUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -56,7 +58,7 @@ public class ExampleDecisionTableTest {
 	@Test
 	public void testWithSinglePredicateAndSingleDecision() {
 		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", "0");
+		predicates.put("P_COND", V_FALSE);
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
@@ -85,7 +87,7 @@ public class ExampleDecisionTableTest {
 	@Test
 	public void testWithSinglePredicateAndMultipleDecisions() {
 		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", "1");
+		predicates.put("P_COND", V_TRUE);
 		Map<String, Object> ruleStorage = new HashMap<String, Object>();
 		ruleStorage.put("RESULT", true);
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, ruleStorage);
@@ -126,8 +128,8 @@ public class ExampleDecisionTableTest {
 	@Test
 	public void testWithMultiplePredicateAndSingleDecision() {
 		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", "0");
-		predicates.put("P_USERCASE2", "0");
+		predicates.put("P_COND", V_FALSE);
+		predicates.put("P_USERCASE2", V_FALSE);
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
@@ -147,7 +149,7 @@ public class ExampleDecisionTableTest {
 		assertEquals(false, entries.get(0).getValue());
 
 		// Changing one predicate
-		predicates.put("P_USERCASE2", "1");
+		predicates.put("P_USERCASE2", V_TRUE);
 		decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 
 		assertNotNull(decisions);
