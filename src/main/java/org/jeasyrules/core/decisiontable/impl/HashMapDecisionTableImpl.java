@@ -5,8 +5,11 @@ import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
 import static org.apache.commons.collections.MapUtils.isNotEmpty;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.jeasyrules.core.decisiontable.DecisionConstants.OPERATOR_OR;
 import static org.jeasyrules.core.decisiontable.DecisionConstants.PREFIX_DECISION;
 import static org.jeasyrules.core.decisiontable.DecisionConstants.PREFIX_VALIDATION;
+import static org.jeasyrules.core.decisiontable.DecisionConstants.V_FALSE;
+import static org.jeasyrules.core.decisiontable.DecisionConstants.V_TRUE;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -79,8 +82,8 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 		return row.containsKey(kQuery) //
 		        && isNotEmpty(row.get(kQuery)) //
 		        && isNotEmpty(predicates.get(kQuery)) //
-		        && ("1".equals(row.get(kQuery).trim()) || "0".equals(row.get(kQuery).trim())) //
-		        && ("1".equals(predicates.get(kQuery).trim()) || "0".equals(predicates.get(kQuery).trim())) //
+		        && (V_TRUE.equals(row.get(kQuery).trim()) || V_FALSE.equals(row.get(kQuery).trim())) //
+		        && (V_TRUE.equals(predicates.get(kQuery).trim()) || V_FALSE.equals(predicates.get(kQuery).trim())) //
 		        && !predicates.get(kQuery).trim().equalsIgnoreCase(row.get(kQuery).trim());
 	}
 
@@ -128,7 +131,7 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 			DecisionResult result = new DecisionResult();
 			Map<String, String> d = new HashMap<String, String>();
 			Map<String, Boolean> v = new HashMap<String, Boolean>();
-			Boolean globalStatus = ("or".equalsIgnoreCase(validationOperator));
+			Boolean globalStatus = (OPERATOR_OR.equalsIgnoreCase(validationOperator));
 
 			// Step 1 : decisions
 			for (String key : item.keySet()) {
@@ -151,14 +154,14 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 					ValidationRule<T> rule = getValidationRulesFromId(item.get(key));
 					if (null == rule) {
 						v.put(item.get(key), false);
-						if (!"or".equalsIgnoreCase(validationOperator)) {
+						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator)) {
 							globalStatus = false;
 						}
 					} else {
 						Boolean status = rule.validate(valueObject, ruleStorage);
 						v.put(item.get(key), status);
 
-						if (!"or".equalsIgnoreCase(validationOperator) && !status) {
+						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator) && !status) {
 							globalStatus = false;
 						} else if (status) {
 							globalStatus = true;
