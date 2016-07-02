@@ -1,5 +1,6 @@
 package org.jeasyrules.core.decisiontable;
 
+import static org.jeasyrules.core.decisiontable.DecisionConstants.PREFIX_PREDICATE;
 import static org.jeasyrules.core.decisiontable.DecisionConstants.V_FALSE;
 import static org.jeasyrules.core.decisiontable.DecisionConstants.V_TRUE;
 
@@ -39,6 +40,10 @@ public class Predicates {
 	 * @return Predicates
 	 */
 	public Predicates addPredicate(String key, String value) {
+		if (!key.startsWith(PREFIX_PREDICATE)) {
+			key = PREFIX_PREDICATE + key;
+		}
+
 		mapPredicates.put(key, value);
 		return this;
 	}

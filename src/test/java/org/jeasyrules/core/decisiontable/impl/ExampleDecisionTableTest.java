@@ -56,7 +56,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithSinglePredicateAndSingleDecision() {
-		Predicates predicates = Predicates.newInstance().addFalse("P_COND");
+		Predicates predicates = Predicates.newInstance().addFalse("COND");
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
@@ -84,7 +84,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithSinglePredicateAndMultipleDecisions() {
-		Predicates predicates = Predicates.newInstance().addTrue("P_COND");
+		Predicates predicates = Predicates.newInstance().addTrue("COND");
 		Map<String, Object> ruleStorage = new HashMap<String, Object>();
 		ruleStorage.put("RESULT", true);
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, ruleStorage);
@@ -124,7 +124,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithMultiplePredicateAndSingleDecision() {
-		Predicates predicates = Predicates.newInstance().addFalse("P_COND", "P_USERCASE2");
+		Predicates predicates = Predicates.newInstance().addFalse("P_COND", "USERCASE2");
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
