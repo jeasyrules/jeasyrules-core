@@ -22,6 +22,7 @@ import org.apache.commons.collections.Predicate;
 import org.jeasyrules.core.decisiontable.DecisionConstants;
 import org.jeasyrules.core.decisiontable.DecisionResult;
 import org.jeasyrules.core.decisiontable.DecisionTable;
+import org.jeasyrules.core.decisiontable.Predicates;
 import org.jeasyrules.core.decisiontable.ValidationRule;
 
 /**
@@ -40,7 +41,16 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject, Map<String, Object> ruleStorage) {
+	public List<DecisionResult> getDecisions(Predicates predicates, T valueObject, Map<String, Object> ruleStorage) {
+		return getDecisions(predicates.toMap(), valueObject, ruleStorage);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
+			Map<String, Object> ruleStorage) {
 		List<Map<String, String>> decisions = new ArrayList<Map<String, String>>();
 		if (isNotEmpty(rows) && isNotEmpty(predicates)) {
 			for (Map<String, String> row : rows) {
@@ -80,11 +90,11 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 */
 	private boolean isRowNotSelectable(Map<String, String> row, Map<String, String> predicates, String kQuery) {
 		return row.containsKey(kQuery) //
-		        && isNotEmpty(row.get(kQuery)) //
-		        && isNotEmpty(predicates.get(kQuery)) //
-		        && (V_TRUE.equals(row.get(kQuery).trim()) || V_FALSE.equals(row.get(kQuery).trim())) //
-		        && (V_TRUE.equals(predicates.get(kQuery).trim()) || V_FALSE.equals(predicates.get(kQuery).trim())) //
-		        && !predicates.get(kQuery).trim().equalsIgnoreCase(row.get(kQuery).trim());
+				&& isNotEmpty(row.get(kQuery)) //
+				&& isNotEmpty(predicates.get(kQuery)) //
+				&& (V_TRUE.equals(row.get(kQuery).trim()) || V_FALSE.equals(row.get(kQuery).trim())) //
+				&& (V_TRUE.equals(predicates.get(kQuery).trim()) || V_FALSE.equals(predicates.get(kQuery).trim())) //
+				&& !predicates.get(kQuery).trim().equalsIgnoreCase(row.get(kQuery).trim());
 	}
 
 	/**
@@ -116,7 +126,8 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 * @param ruleStorage
 	 * @return List<DecisionResult>
 	 */
-	private List<DecisionResult> transformDecisionResult(List<Map<String, String>> decisions, T valueObject, Map<String, Object> ruleStorage) {
+	private List<DecisionResult> transformDecisionResult(List<Map<String, String>> decisions, T valueObject,
+			Map<String, Object> ruleStorage) {
 		if (isEmpty(decisions)) {
 			return null;
 		}
