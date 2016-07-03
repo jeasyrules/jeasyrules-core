@@ -2,6 +2,7 @@ package org.jeasyrules.core.decisiontable.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.IOException;
@@ -93,7 +94,7 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 			for (String header : headers) {
 				String value = record.get(header);
 				if (null == value) {
-					value = "";
+					value = EMPTY;
 				}
 
 				value = value.trim();
