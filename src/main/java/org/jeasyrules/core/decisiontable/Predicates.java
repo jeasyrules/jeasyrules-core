@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * Predicates class (fluent coding style).
  * 
- * @author idrissneumann
+ * @author Idriss Neumann <neumann.idriss@gmail.com>
  *
  */
 public class Predicates {
