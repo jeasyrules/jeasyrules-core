@@ -23,18 +23,6 @@ public interface DecisionTable<T extends Serializable> {
 	 * @param ruleStorage
 	 * @return Map<String, String>
 	 */
-	public List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
-			Map<String, Object> ruleStorage);
-
-	/**
-	 * Getting decisions from a predicate's list.
-	 * 
-	 * @param predicates
-	 * @param T
-	 *            valueObject
-	 * @param ruleStorage
-	 * @return Map<String, String>
-	 */
 	public List<DecisionResult> getDecisions(Predicates predicates, T valueObject, Map<String, Object> ruleStorage);
 
 	/**

@@ -46,10 +46,15 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Getting decisions from a predicate's list.
+	 * 
+	 * @param predicates
+	 * @param T
+	 *            valueObject
+	 * @param ruleStorage
+	 * @return Map<String, String>
 	 */
-	@Override
-	public List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
+	private List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
 			Map<String, Object> ruleStorage) {
 		List<Map<String, String>> decisions = new ArrayList<Map<String, String>>();
 		if (isNotEmpty(rows) && isNotEmpty(predicates)) {
@@ -139,15 +144,13 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 		List<DecisionResult> rtn = new ArrayList<DecisionResult>();
 
 		for (Map<String, String> item : decisions) {
-			DecisionResult result = new DecisionResult();
-			Map<String, String> d = new HashMap<String, String>();
-			Map<String, Boolean> v = new HashMap<String, Boolean>();
-			Boolean globalStatus = (OPERATOR_OR.equalsIgnoreCase(validationOperator));
+			DecisionResult result = DecisionResult.newInstance()
+					.status(OPERATOR_OR.equalsIgnoreCase(validationOperator));
 
 			// Step 1 : decisions
 			for (String key : item.keySet()) {
 				if (key.toUpperCase().startsWith(PREFIX_DECISION)) {
-					d.put(key, item.get(key));
+					result.decision(key, item.get(key));
 				}
 
 				// We also add all of decision table columns value in the
@@ -164,26 +167,14 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 
 					ValidationRule<T> rule = getValidationRulesFromId(item.get(key));
 					if (null == rule) {
-						v.put(item.get(key), false);
-						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator)) {
-							globalStatus = false;
-						}
+						result.validationStatus(item.get(key), false);
 					} else {
 						Boolean status = rule.validate(valueObject, ruleStorage);
-						v.put(item.get(key), status);
-
-						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator) && !status) {
-							globalStatus = false;
-						} else if (status) {
-							globalStatus = true;
-						}
+						result.validationStatus(item.get(key), status).status(result.getStatus() || status);
 					}
 				}
 			}
 
-			result.setDecisions(d);
-			result.setStatus(globalStatus);
-			result.setValidationStatus(v);
 			rtn.add(result);
 		}
 
