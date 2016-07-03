@@ -56,7 +56,7 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 */
 	private List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
 			Map<String, Object> ruleStorage) {
-		List<Map<String, String>> decisions = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> decisions = new ArrayList<>();
 		if (isNotEmpty(rows) && isNotEmpty(predicates)) {
 			for (Map<String, String> row : rows) {
 				Boolean select = true;
@@ -70,7 +70,7 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 
 				// Getting the decision
 				if (select) {
-					Map<String, String> decision = new HashMap<String, String>();
+					Map<String, String> decision = new HashMap<>();
 					for (String kRow : row.keySet()) {
 						if (!kRow.toUpperCase().startsWith(DecisionConstants.PREFIX_PREDICATE)) {
 							decision.put(kRow, row.get(kRow));
@@ -138,10 +138,10 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 		}
 
 		if (null == ruleStorage) {
-			ruleStorage = new HashMap<String, Object>();
+			ruleStorage = new HashMap<>();
 		}
 
-		List<DecisionResult> rtn = new ArrayList<DecisionResult>();
+		List<DecisionResult> rtn = new ArrayList<>();
 
 		for (Map<String, String> item : decisions) {
 			DecisionResult result = DecisionResult.newInstance()

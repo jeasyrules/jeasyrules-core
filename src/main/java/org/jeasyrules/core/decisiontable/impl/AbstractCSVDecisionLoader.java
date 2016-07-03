@@ -51,7 +51,7 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 		Reader reader = new InputStreamReader(new BOMInputStream(in));
 		parser = CSVFormat.newFormat(separator).withHeader().parse(reader);
 
-		Map<String, Boolean> hashExists = new HashMap<String, Boolean>();
+		Map<String, Boolean> hashExists = new HashMap<>();
 		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
 		parser.forEach(r -> processRecord(r, rows, hashExists));
 
