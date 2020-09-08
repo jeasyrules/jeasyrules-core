@@ -2,6 +2,7 @@ package org.jeasyrules.core.decisiontable.impl;
 
 import static org.apache.commons.collections.CollectionUtils.isEmpty;
 import static org.apache.commons.collections.CollectionUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.EMPTY;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 		Reader reader = new InputStreamReader(new BOMInputStream(in));
 		parser = CSVFormat.newFormat(separator).withHeader().parse(reader);
 
-		Map<String, Boolean> hashExists = new HashMap<String, Boolean>();
+		Map<String, Boolean> hashExists = new HashMap<>();
 		List<Map<String, String>> rows = new ArrayList<Map<String, String>>();
 		parser.forEach(r -> processRecord(r, rows, hashExists));
 
@@ -93,7 +94,7 @@ public abstract class AbstractCSVDecisionLoader<T extends Serializable> implemen
 			for (String header : headers) {
 				String value = record.get(header);
 				if (null == value) {
-					value = "";
+					value = EMPTY;
 				}
 
 				value = value.trim();

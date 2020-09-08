@@ -1,7 +1,5 @@
 package org.jeasyrules.core.decisiontable.impl;
 
-import static org.jeasyrules.core.decisiontable.DecisionConstants.V_FALSE;
-import static org.jeasyrules.core.decisiontable.DecisionConstants.V_TRUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
@@ -13,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jeasyrules.core.decisiontable.DecisionResult;
+import org.jeasyrules.core.decisiontable.Predicates;
 import org.jeasyrules.core.decisiontable.ValidationRule;
 import org.jeasyrules.core.decisiontable.jdd.ExampleDecisionTableLoader;
 import org.jeasyrules.core.decisiontable.jdd.ExampleVO;
@@ -57,8 +56,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithSinglePredicateAndSingleDecision() {
-		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", V_FALSE);
+		Predicates predicates = Predicates.newInstance().addFalse("COND");
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
@@ -86,8 +84,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithSinglePredicateAndMultipleDecisions() {
-		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", V_TRUE);
+		Predicates predicates = Predicates.newInstance().addTrue("COND");
 		Map<String, Object> ruleStorage = new HashMap<String, Object>();
 		ruleStorage.put("RESULT", true);
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, ruleStorage);
@@ -127,9 +124,7 @@ public class ExampleDecisionTableTest {
 	 */
 	@Test
 	public void testWithMultiplePredicateAndSingleDecision() {
-		Map<String, String> predicates = new HashMap<String, String>();
-		predicates.put("P_COND", V_FALSE);
-		predicates.put("P_USERCASE2", V_FALSE);
+		Predicates predicates = Predicates.newInstance().addFalse("P_COND", "USERCASE2");
 		List<DecisionResult> decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 		assertNotNull(decisions);
 		assertEquals(1, decisions.size());
@@ -149,7 +144,7 @@ public class ExampleDecisionTableTest {
 		assertEquals(false, entries.get(0).getValue());
 
 		// Changing one predicate
-		predicates.put("P_USERCASE2", V_TRUE);
+		predicates.addTrue("P_USERCASE2");
 		decisions = dtLoader.getDecisionTable().getDecisions(predicates, exampleVO, null);
 
 		assertNotNull(decisions);

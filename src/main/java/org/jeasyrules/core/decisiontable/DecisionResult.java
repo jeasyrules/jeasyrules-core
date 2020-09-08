@@ -1,6 +1,7 @@
 package org.jeasyrules.core.decisiontable;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -61,5 +62,87 @@ public class DecisionResult implements Serializable {
 	 */
 	public void setValidationStatus(Map<String, Boolean> validationStatus) {
 		this.validationStatus = validationStatus;
+	}
+
+	/**
+	 * private constructore => use newInstance methods.
+	 */
+	private DecisionResult() {
+
+	}
+
+	/**
+	 * @return new instance of DecisionResult.
+	 */
+	public static DecisionResult newInstance() {
+		return new DecisionResult();
+	}
+
+	/**
+	 * Setting the status with fluent coding style.
+	 * 
+	 * @param status
+	 *            the status to set
+	 * @return the current instance of DecisionResult
+	 */
+	public DecisionResult status(Boolean status) {
+		setStatus(status);
+		return this;
+	}
+
+	/**
+	 * Setting the decisions with fluent coding style.
+	 * 
+	 * @param decisions
+	 *            the status to set
+	 * @return the current instance of DecisionResult
+	 */
+	public DecisionResult decisions(Map<String, String> decisions) {
+		setDecisions(decisions);
+		return this;
+	}
+
+	/**
+	 * Setting the validationStatus with fluent coding style.
+	 * 
+	 * @param validationStatus
+	 *            the status to set
+	 * @return the current instance of DecisionResult
+	 */
+	public DecisionResult validationStatus(Map<String, Boolean> validationStatus) {
+		setValidationStatus(validationStatus);
+		return this;
+	}
+
+	/**
+	 * Pushing a decision with fluent coding style.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return the current instance of DecisionResult
+	 */
+	public DecisionResult decision(String key, String value) {
+		if (null == decisions) {
+			decisions = new HashMap<>();
+		}
+
+		decisions.put(key, value);
+		return this;
+	}
+
+	/**
+	 * Pushing a validation status with fluent coding style.
+	 * 
+	 * @param key
+	 * @param value
+	 * @return the current instance of DecisionResult
+	 */
+	public DecisionResult validationStatus(String key, Boolean value) {
+		if (null == validationStatus) {
+			validationStatus = new HashMap<>();
+		}
+
+		validationStatus.put(key, value);
+		return this;
 	}
 }

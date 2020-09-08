@@ -22,6 +22,7 @@ import org.apache.commons.collections.Predicate;
 import org.jeasyrules.core.decisiontable.DecisionConstants;
 import org.jeasyrules.core.decisiontable.DecisionResult;
 import org.jeasyrules.core.decisiontable.DecisionTable;
+import org.jeasyrules.core.decisiontable.Predicates;
 import org.jeasyrules.core.decisiontable.ValidationRule;
 
 /**
@@ -40,8 +41,22 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject, Map<String, Object> ruleStorage) {
-		List<Map<String, String>> decisions = new ArrayList<Map<String, String>>();
+	public List<DecisionResult> getDecisions(Predicates predicates, T valueObject, Map<String, Object> ruleStorage) {
+		return getDecisions(predicates.toMap(), valueObject, ruleStorage);
+	}
+
+	/**
+	 * Getting decisions from a predicate's list.
+	 * 
+	 * @param predicates
+	 * @param T
+	 *            valueObject
+	 * @param ruleStorage
+	 * @return Map<String, String>
+	 */
+	private List<DecisionResult> getDecisions(Map<String, String> predicates, T valueObject,
+			Map<String, Object> ruleStorage) {
+		List<Map<String, String>> decisions = new ArrayList<>();
 		if (isNotEmpty(rows) && isNotEmpty(predicates)) {
 			for (Map<String, String> row : rows) {
 				Boolean select = true;
@@ -55,7 +70,7 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 
 				// Getting the decision
 				if (select) {
-					Map<String, String> decision = new HashMap<String, String>();
+					Map<String, String> decision = new HashMap<>();
 					for (String kRow : row.keySet()) {
 						if (!kRow.toUpperCase().startsWith(DecisionConstants.PREFIX_PREDICATE)) {
 							decision.put(kRow, row.get(kRow));
@@ -80,11 +95,11 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 */
 	private boolean isRowNotSelectable(Map<String, String> row, Map<String, String> predicates, String kQuery) {
 		return row.containsKey(kQuery) //
-		        && isNotEmpty(row.get(kQuery)) //
-		        && isNotEmpty(predicates.get(kQuery)) //
-		        && (V_TRUE.equals(row.get(kQuery).trim()) || V_FALSE.equals(row.get(kQuery).trim())) //
-		        && (V_TRUE.equals(predicates.get(kQuery).trim()) || V_FALSE.equals(predicates.get(kQuery).trim())) //
-		        && !predicates.get(kQuery).trim().equalsIgnoreCase(row.get(kQuery).trim());
+				&& isNotEmpty(row.get(kQuery)) //
+				&& isNotEmpty(predicates.get(kQuery)) //
+				&& (V_TRUE.equals(row.get(kQuery).trim()) || V_FALSE.equals(row.get(kQuery).trim())) //
+				&& (V_TRUE.equals(predicates.get(kQuery).trim()) || V_FALSE.equals(predicates.get(kQuery).trim())) //
+				&& !predicates.get(kQuery).trim().equalsIgnoreCase(row.get(kQuery).trim());
 	}
 
 	/**
@@ -116,27 +131,26 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 	 * @param ruleStorage
 	 * @return List<DecisionResult>
 	 */
-	private List<DecisionResult> transformDecisionResult(List<Map<String, String>> decisions, T valueObject, Map<String, Object> ruleStorage) {
+	private List<DecisionResult> transformDecisionResult(List<Map<String, String>> decisions, T valueObject,
+			Map<String, Object> ruleStorage) {
 		if (isEmpty(decisions)) {
 			return null;
 		}
 
 		if (null == ruleStorage) {
-			ruleStorage = new HashMap<String, Object>();
+			ruleStorage = new HashMap<>();
 		}
 
-		List<DecisionResult> rtn = new ArrayList<DecisionResult>();
+		List<DecisionResult> rtn = new ArrayList<>();
 
 		for (Map<String, String> item : decisions) {
-			DecisionResult result = new DecisionResult();
-			Map<String, String> d = new HashMap<String, String>();
-			Map<String, Boolean> v = new HashMap<String, Boolean>();
-			Boolean globalStatus = (OPERATOR_OR.equalsIgnoreCase(validationOperator));
+			DecisionResult result = DecisionResult.newInstance()
+					.status(OPERATOR_OR.equalsIgnoreCase(validationOperator));
 
 			// Step 1 : decisions
 			for (String key : item.keySet()) {
 				if (key.toUpperCase().startsWith(PREFIX_DECISION)) {
-					d.put(key, item.get(key));
+					result.decision(key, item.get(key));
 				}
 
 				// We also add all of decision table columns value in the
@@ -153,26 +167,14 @@ public class HashMapDecisionTableImpl<T extends Serializable> implements Decisio
 
 					ValidationRule<T> rule = getValidationRulesFromId(item.get(key));
 					if (null == rule) {
-						v.put(item.get(key), false);
-						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator)) {
-							globalStatus = false;
-						}
+						result.validationStatus(item.get(key), false);
 					} else {
 						Boolean status = rule.validate(valueObject, ruleStorage);
-						v.put(item.get(key), status);
-
-						if (!OPERATOR_OR.equalsIgnoreCase(validationOperator) && !status) {
-							globalStatus = false;
-						} else if (status) {
-							globalStatus = true;
-						}
+						result.validationStatus(item.get(key), status).status(result.getStatus() || status);
 					}
 				}
 			}
 
-			result.setDecisions(d);
-			result.setStatus(globalStatus);
-			result.setValidationStatus(v);
 			rtn.add(result);
 		}
 
