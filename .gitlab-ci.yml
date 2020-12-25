@@ -8,4 +8,4 @@ github-mirror:
   only:
     - /^(master.*)$/
   tags:
-    - jeasyrules
+    - githubmirror
