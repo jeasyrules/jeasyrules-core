@@ -11,3 +11,4 @@ Simple Java rules engine API.
 * Main repo: https://gitlab.comwork.io/oss/jeasyrules-core
 * Github mirror and mvn repo: https://github.com/jeasyrules/jeasyrules-core 
 * Gitlab mirror backup: https://gitlab.com/ineumann/jeasyrules-core
+* Bitbucket mirror backup: https://bitbucket.org/idrissneumann/jeasyrules-core
